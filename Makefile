@@ -3,9 +3,11 @@ NAME = libasm.a
 SRCS =	ft_strlen.s		\
 	ft_strcpy.s			\
 	ft_strcmp.s			\
+	ft_write.s			\
+	ft_read.s			\
+	ft_strdup.s			\
 
-# CC = nasm -felf64		#for linux
-CC = nasm -fmacho64		#for macos
+CC = nasm -felf64
 
 OBJS = ${SRCS:.s=.o}
 
