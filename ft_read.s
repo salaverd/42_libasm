@@ -1,16 +1,25 @@
+default rel
+
 global ft_read
 extern ___error
 
 ft_read:
-    mov rax, 0          ; syscall number for read (Linux)
-    syscall             ; perform the syscall
-    cmp rax, 0
-    jl .error           ; if return value < 0, jump to error handler
+    mov rax, 0              ; syscall: read
+    syscall
+    test rax, rax
+    jge .ok                 ; success if rax >= 0
+
+    ; -------- error path --------
+    neg rax                 ; rax = errno
+    mov rdi, rax
+
+    sub rsp, 8              ; align stack
+    call ___error wrt ..plt
+    add rsp, 8
+
+    mov [rax], edi
+    mov rax, -1
     ret
 
-.error:
-    push rax            ; save error code (rax < 0)
-    call ___error       ; get address of errno
-    pop qword [rax]     ; set *errno = error code (stored in rax)
-    mov rax, -1         ; return -1 to signal failure
+.ok:
     ret
